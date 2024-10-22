@@ -4,7 +4,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MainPage from './pages/MainPage';
 import LogoutPage from './pages/LogoutPage';
-import Game from './pages/Dashboard';
+import Dashboard from './pages/Dashboard';
+import DailyGame from './pages/DailyGame';
 
 function App() {
   return (
@@ -14,7 +15,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/logout" element={<LogoutPage />} /> 
-        <Route path="/game" element={<Game />} /> 
+        <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/daily-game" element={<DailyGame />}/>
       </Routes>
     </Router>
   );

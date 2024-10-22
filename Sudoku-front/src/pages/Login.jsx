@@ -21,7 +21,7 @@ const Login = () => {
       );
       setSuccess(response.data.message);
       setError('');
-      navigate('/game'); // Redirect to game or dashboard after login
+      navigate('/dashboard'); // Redirect to game or dashboard after login
     } catch (err) {
       setError(err.response?.data?.message || 'Error logging in');
       setSuccess('');

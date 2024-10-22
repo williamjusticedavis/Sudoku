@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');  // Import routes
 const cookieParser = require('cookie-parser');  // Import cookie-parser
 const cors = require('cors');
+const sudokuRoutes = require('./routes/sudokuRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,8 +22,8 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'Server is running successfully!' });
 });
 
-// Use user routes
 app.use('/api/users', userRoutes);
+app.use('/api/sudoku', sudokuRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
