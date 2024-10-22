@@ -14,6 +14,7 @@ const DailyGame = () => {
   const [userEntries, setUserEntries] = useState([]);  // Track user-entered numbers
   const [activeCell, setActiveCell] = useState({ row: null, col: null, value: null });  // Track the active cell
   const [usedNumbers, setUsedNumbers] = useState({});  // Track how many times each number is used
+  const [highlightedNumbers, setHighlightedNumbers] = useState(null); // Track highlighted numbers
 
   useEffect(() => {
     // Fetch the daily puzzle from the backend
@@ -91,9 +92,18 @@ const DailyGame = () => {
       if (newValue > 0) newUsedNumbers[newValue]++;  // Increase count for the new value
       setUsedNumbers(newUsedNumbers);
 
-      // Immediately check if the new value is correct
-      if (newValue === solution[rowIndex][colIndex]) {
-        setActiveCell({ row: rowIndex, col: colIndex, value: newValue });  // Set the active cell to trigger highlighting
+      // Remove highlighting if the number is deleted
+      if (value === '') {
+        setActiveCell({ row: rowIndex, col: colIndex, value: null }); // Keep active cell even when deleted
+        setHighlightedNumbers(null); // Remove all highlights if the cell is cleared
+      } else {
+        // Check correctness immediately and set highlighting
+        if (newValue === solution[rowIndex][colIndex]) {
+          setActiveCell({ row: rowIndex, col: colIndex, value: newValue });
+          setHighlightedNumbers(newValue);  // Highlight all instances of the entered number
+        } else {
+          setHighlightedNumbers(null); // Remove highlight if incorrect
+        }
       }
     }
   };
@@ -114,6 +124,18 @@ const DailyGame = () => {
     }
   };
 
+  // Function to handle the user clicking a pre-filled number
+  const handlePreFilledClick = (rowIndex, colIndex, value) => {
+    setActiveCell({ row: rowIndex, col: colIndex, value });
+    setHighlightedNumbers(value);  // Highlight all instances of the clicked number
+  };
+
+  // Function to handle an empty square click
+  const handleEmptySquareClick = (rowIndex, colIndex) => {
+    setActiveCell({ row: rowIndex, col: colIndex, value: null });
+    setHighlightedNumbers(null);  // Clear all highlighted numbers
+  };
+
   // Function to render the Sudoku grid
   const renderGrid = () => {
     if (!puzzle || !solution) return null;  // Ensure both puzzle and solution are loaded
@@ -125,7 +147,7 @@ const DailyGame = () => {
             const isCorrect = cell === solution[rowIndex][colIndex];  // Compare user entry with solution
             const isUserEntered = userEntries[rowIndex * 9 + colIndex];
             const isActiveCell = rowIndex === activeCell.row && colIndex === activeCell.col;
-            const isSameNumber = activeCell.value && cell === activeCell.value;
+            const isSameNumber = highlightedNumbers && cell === highlightedNumbers;
 
             // Only highlight row, column, and block if an active cell exists
             const isActiveRow = activeCell.row !== null && rowIndex === activeCell.row;
@@ -154,7 +176,7 @@ const DailyGame = () => {
                             focus:outline-none caret-transparent cursor-pointer`}  // Remove blinking caret
                 maxLength={1}
                 readOnly={cell !== 0 && !isUserEntered}  // Set readOnly for pre-filled cells and correct user-entered cells
-                onFocus={() => setActiveCell({ row: rowIndex, col: colIndex, value: cell })}  // Set active cell on focus
+                onFocus={() => (cell !== 0 ? handlePreFilledClick(rowIndex, colIndex, cell) : handleEmptySquareClick(rowIndex, colIndex))}  // Handle pre-filled or empty clicks
                 onBlur={(e) => e.preventDefault()}  // Prevent focus from being lost
               />
             );
