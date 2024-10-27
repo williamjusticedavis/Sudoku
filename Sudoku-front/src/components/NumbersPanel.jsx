@@ -1,31 +1,26 @@
 import React from 'react';
-import { FaEraser } from 'react-icons/fa'; // Eraser icon
 
-const NumbersPanel = ({ handleNumberClick, handleEraseClick, usedNumbers }) => {
+const NumbersPanel = ({ onNumberClick, onErase }) => {
+  const numbers = Array.from({ length: 9 }, (_, i) => i + 1);
+
   return (
-    <div className="flex flex-col space-y-6">
-      {/* Numbers Grid */}
-      <div className="grid grid-cols-3 gap-6">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+    <div className="flex flex-col items-center space-y-2">
+      <div className="grid grid-cols-3 gap-2">
+        {numbers.map((num) => (
           <button
             key={num}
-            onClick={() => handleNumberClick(num)}
-            className={`w-16 h-16 md:w-20 md:h-20 rounded-full text-white font-bold shadow-lg transition-all transform 
-            ${usedNumbers[num] >= 9 ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 hover:scale-105'}`}
-            disabled={usedNumbers[num] >= 9}  // Disable if all 9 numbers are used
+            onClick={() => onNumberClick(num)}
+            className="w-14 h-14 md:w-16 md:h-16 bg-gray-200 hover:bg-blue-300 text-lg md:text-xl font-bold rounded-md shadow-md"
           >
             {num}
           </button>
         ))}
       </div>
-
-      {/* Erase Button */}
       <button
-        onClick={handleEraseClick}
-        className="w-full h-16 md:h-20 rounded-full bg-red-500 text-white font-bold shadow-lg hover:bg-red-600 transition-all flex items-center justify-center space-x-2"
+        onClick={onErase}
+        className="w-14 h-14 md:w-16 md:h-16 bg-red-400 hover:bg-red-500 text-white font-bold rounded-md shadow-md mt-4"
       >
-        <FaEraser className="text-xl" /> {/* Eraser icon */}
-        <span>Erase</span>
+        Erase
       </button>
     </div>
   );
